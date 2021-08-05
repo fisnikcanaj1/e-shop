@@ -2,10 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { Product } = require('../models/product');
 const { Category } = require('../models/category');
+const mongoose = require('mongoose');
 
 router.get(`/`, async (req, res) => {
+    let filter = {};
+    if(req.query.categories) {
+        filter = {category: req.query.categories.split(',')};
+    }
 
-    const productList = await Product.find().populate('category');
+    const productList = await Product.find(filter).populate('category');
 
     if(!productList) {
         res.status(500).json({success: false});
@@ -24,6 +29,7 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post(`/`, async (req, res) => {
+
     const category = await Category.findById(req.body.category);
     if(!category) return res.status(400).send('Invalid category');
     let product = new Product({
@@ -51,6 +57,10 @@ router.post(`/`, async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
+
+    if(mongoose.isValidObjectId(req.params.id)) {
+        res.status(400).send('Invalid product id');
+    }
     const category = Category.findById(req.body.category);
     if(!category) return res.status(400).json({success: false, message: "Invalid category"});
     const product = await Product.findByIdAndUpdate(
@@ -73,6 +83,38 @@ router.put('/:id', async (req, res) => {
     }
 
     res.status(200).json(product);
+});
+
+router.delete('/:id',   (req, res) => {
+    Product.findByIdAndDelete(req.params.id).then(product => {
+        if(product) {
+            return res.status(200).json({success: true, message: "Product has been deleted successfully"});
+        } else {
+            return res.status(404).json({success: false, message: "Product does not exist!"});
+        }
+    }).catch(err => {
+        return res.status(500).json({success: false, error: err});
+    });
+});
+
+router.get('/get/count', async (req, res) => {
+    const productCount = await Product.find().countDocuments((count) => count);
+    if (!productCount) {
+        return res.status(404).send('No product found');
+    }
+
+    res.status(200).json({productCount: productCount});
+});
+
+router.get('/get/featured/:count', async(req, res) => {
+    const count = req.params.count ? req.params.count : 0;
+    const featuredProducts = await Product.find({isFeatured: true}).limit(+count);
+
+    if(!featuredProducts) {
+        res.status(500).json({success: false})
+    }
+
+    res.send(featuredProducts);
 });
 
 module.exports = router;
