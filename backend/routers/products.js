@@ -51,7 +51,6 @@ router.post(`/`, async (req, res) => {
     if(!product) {
         return res.status(500).json({success: false, message: 'Post failed'})
     }
-    console.log(product);
     res.status(200).json(product);
 });
 
