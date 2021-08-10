@@ -28,6 +28,7 @@ app.use(errorHandler);
 app.use(`${api}/products`, productRouter);
 app.use(`${api}/categories`, categoriesRouter);
 app.use(`${api}/users`, usersRoutes);
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
 app.use(`${api}/orders`, ordersRoutes);
 
 app.listen(3000, () => {

@@ -51,7 +51,6 @@ router.post('/', async (req, res) => {
         const totalPrice = orderItem.product.price * orderItem.quanity;
         return totalPrice;
     }));
-    console.log(totalPrices);
 
     const totalPrice = totalPrices.reduce((a, b) => {
      return a + b
@@ -144,6 +143,6 @@ router.get('/get/userorders/:userid', async (req, res) => {
     }
     res.send(userOrderList);
 
-})
+});
 
 module.exports = router;
