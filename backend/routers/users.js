@@ -30,6 +30,7 @@ router.put('/:id', async (req, res) => {
     } else {
         newPassword = userExist.passwordHash;
     }
+    console.log(req.body.country)
     const user = await User.findByIdAndUpdate(
         req.params.id,
         {
@@ -38,12 +39,13 @@ router.put('/:id', async (req, res) => {
             isAdmin: req.body.isAdmin,
             passwordHash: newPassword,
             street: req.body.street,
-            apartment: req.body.apartmant,
+            apartment: req.body.apartment,
             zip: req.body.zip,
             city: req.body.city,
-            country: req.body.country
+            country: req.body.country,
+            phone: req.body.phone
         },
-        {new: true}
+
     ).select('-passwordHash');
 
     if (!user) {
@@ -54,11 +56,12 @@ router.put('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    console.log(req.body.password);
     let user = new User({
         name: req.body.name,
         email: req.body.email,
         color: req.body.color,
-        passwordHash: bcrypt.hashSync(req.body.passwordHash, 10),
+        passwordHash: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,

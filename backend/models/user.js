@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     name: {
-        type:String,
+        type: String,
         required: true
     },
     email: {
@@ -14,15 +14,15 @@ const userSchema = mongoose.Schema({
         required: true,
     },
     phone: {
-      type: String,
-      required: true
+        type: String,
+        required: true
     },
     isAdmin: {
         type: Boolean,
         default: false
     },
     street: {
-      type: String,
+        type: String,
         default: ''
     },
     apartment: {
@@ -36,10 +36,14 @@ const userSchema = mongoose.Schema({
     city: {
         type: String,
         default: ''
+    },
+    country: {
+        type: String,
+        default: ''
     }
 });
 
-userSchema.virtual('id').get(function() {
+userSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
