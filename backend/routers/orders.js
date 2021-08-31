@@ -32,6 +32,7 @@ router.post('/', async (req, res) => {
     if (!req.body.orderItems) {
         return res.status(400).json({success: false, message: 'No order founded!'});
     }
+    console.log(req.body.orderItems);
 
     const orderItemsIds = Promise.all(req.body.orderItems.map(async orderItem => {
         let newOrderItem = new OrderItem({
@@ -48,7 +49,7 @@ router.post('/', async (req, res) => {
 
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async orderItemId => {
         const orderItem = await OrderItem.findById(orderItemId).populate('product',  'price');
-        const totalPrice = orderItem.product.price * orderItem.quanity;
+        const totalPrice = orderItem.product.price * orderItem.quantity;
         return totalPrice;
     }));
 
