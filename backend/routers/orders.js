@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
 
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async orderItemId => {
         const orderItem = await OrderItem.findById(orderItemId).populate('product',  'price');
-        const totalPrice = orderItem.product.price * orderItem.quantity;
+        const totalPrice = orderItem?.product.price * orderItem?.quantity;
         return totalPrice;
     }));
 
@@ -117,10 +117,11 @@ router.get('/get/count', async (req, res) => {
 
 
 router.delete('/:id', (req, res) => {
-    Order.findOneAndDelete(req.params.id).then(async order => {
+    console.log(req.params.id);
+    Order.findByIdAndRemove(req.params.id).then(async order => {
         if(order) {
             await order.orderItems.map(async orderId => {
-                 await OrderItem.findByIdAndRemove(orderId)
+                 await OrderItem.findByIdAndRemove(orderId);
             });
             return res.status(200).json({success: true, message: 'Order is deleted successfully'});
         } else {

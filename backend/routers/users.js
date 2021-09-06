@@ -54,11 +54,10 @@ router.put('/:id', async (req, res) => {
     res.send(user);
 });
 
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        color: req.body.color,
         passwordHash: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
@@ -67,7 +66,6 @@ router.post('/', async (req, res) => {
         zip: req.body.zip,
         city: req.body.city,
         country: req.body.country,
-        phone: req.body.phone
     });
 
     user = await user.save();
@@ -93,12 +91,10 @@ router.post('/login', async (req, res) => {
             },
             secret,
             {expiresIn: '1d'});
-        res.status(200).send({user: user.email, token: token})
+       return  res.status(200).send({user: user.email, token: token})
     } else {
-        res.status(400).send('Password is incorrect!');
+        return res.status(400).send('Password is incorrect!');
     }
-
-    return res.status(200).json(user);
 });
 
 router.get('/get/count', async (req, res) => {
